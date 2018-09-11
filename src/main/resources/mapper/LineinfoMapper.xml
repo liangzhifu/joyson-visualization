@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyson.visualization.grade.dao.LineinfoMapper">
+  <resultMap id="BaseResultMap" type="com.joyson.visualization.grade.model.Lineinfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="DeptNo" jdbcType="NVARCHAR" property="deptno" />
+    <result column="DeptName" jdbcType="NVARCHAR" property="deptname" />
+    <result column="LineAddress" jdbcType="NVARCHAR" property="lineaddress" />
+    <result column="OperUserID" jdbcType="INTEGER" property="operuserid" />
+    <result column="OperDate" jdbcType="TIMESTAMP" property="operdate" />
+    <result column="Del" jdbcType="BIT" property="del" />
+    <result column="ShiftALeader" jdbcType="NVARCHAR" property="shiftaleader" />
+    <result column="ShiftBLeader" jdbcType="NVARCHAR" property="shiftbleader" />
+  </resultMap>
+
+  <select id="selectLineinfoList" resultMap="BaseResultMap">
+    select Id, DeptNo, DeptName, LineAddress, OperUserID, OperDate, ShiftALeader, ShiftBLeader
+    from LineInfo
+    where (ShiftALeader != '' or ShiftBLeader != '')
+    and Del = 0
+  </select>
+</mapper>

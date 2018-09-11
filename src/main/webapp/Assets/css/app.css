@@ -1,0 +1,131 @@
+﻿body {
+    background: #f5f5fa none;
+}
+
+.formTitle {
+    font-size: 15px;
+    font-weight: bold;
+    background: url(img/white-title.png) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: medium none;
+    color: #2C2C2C;
+    font-weight: bold;
+    text-shadow: 0 1px #FFFFFF;
+    height: 35px;
+    line-height: 34px;
+    padding: 0 10px;
+    position: relative;
+}
+
+.divTable {
+    width: 98%;
+    height: auto;
+    margin: 0 auto;
+    padding-top: 10px;
+}
+
+.tr {
+    clear: both;
+    height: 50px;
+    width: 100%;
+    vertical-align: middle;
+}
+
+.td {
+    float: left;
+    height: 30px;
+}
+
+.td_left {
+    float: left;
+    height: 30px;
+    text-align: left;
+    margin-left: 30px;
+}
+
+.td_left input {
+    width: 155px;
+    font: inherit;
+}
+
+#content .bloc label {
+    padding-top: 6px;
+}
+
+.panel .panel-body {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.panel .panel-heading, .panel .panel-body, .panel .panel-footer {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.form {
+    margin: 20px;
+}
+
+.panel {
+    margin-bottom: 0px;
+}
+
+#content .bloc #gradeList label {
+    display: inline-block;
+    margin-right: 20px;
+    margin-left: 5px;
+}
+
+.grade-title {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #2C2C2C;
+    font-weight: bold;
+}
+
+.grade-title span {
+    font-weight: 400;
+    text-decoration: underline;
+}
+
+#content .bloc label,
+#content .bloc .input input[type=radio] {
+    display:inline-block;
+}
+
+#level1, #level2, #level3 {
+    width: 20px;
+    height: 20px;
+    border-radius:50px;
+    margin: auto;
+    cursor: pointer;
+}
+
+#level1 {
+    background-color: #ff0000;
+}
+
+#level2 {
+    background-color: #0000ff;
+}
+
+#level3 {
+    background-color: #00ff00;
+}
+
+#tips {
+    margin-left: 10px;
+    margin-top: 20px;
+}
+
+#tips #level1,
+#tips #level2,
+#tips #level3 {
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+/* IE HACK */
+#content .bloc .input textarea, #content .bloc .input input[type="text"], #content .selector, #content .uploader {
+    height: 30px;\9
+}

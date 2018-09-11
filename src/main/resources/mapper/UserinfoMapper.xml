@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyson.visualization.grade.dao.UserinfoMapper">
+  <resultMap id="BaseResultMap" type="com.joyson.visualization.grade.model.Userinfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="UserNo" jdbcType="NVARCHAR" property="userno" />
+    <result column="UserName" jdbcType="NVARCHAR" property="username" />
+    <result column="Department" jdbcType="NVARCHAR" property="department" />
+    <result column="CardNo" jdbcType="NVARCHAR" property="cardno" />
+    <result column="Email" jdbcType="NVARCHAR" property="email" />
+    <result column="DeptID" jdbcType="INTEGER" property="deptid" />
+    <result column="ShiftName" jdbcType="NVARCHAR" property="shiftname" />
+    <result column="Luncurr" jdbcType="NVARCHAR" property="luncurr" />
+    <result column="Access" jdbcType="NVARCHAR" property="access" />
+    <result column="Password" jdbcType="NVARCHAR" property="password" />
+    <result column="OperUserID" jdbcType="INTEGER" property="operuserid" />
+    <result column="OperDate" jdbcType="TIMESTAMP" property="operdate" />
+    <result column="Del" jdbcType="BIT" property="del" />
+    <result column="InductionTime" jdbcType="TIMESTAMP" property="inductiontime" />
+    <result column="Source" jdbcType="NVARCHAR" property="source" />
+    <result column="Photo" jdbcType="LONGVARBINARY" property="photo" />
+  </resultMap>
+
+  <select id="selectUserinfoList" parameterType="com.joyson.visualization.grade.model.GradeLine" resultMap="BaseResultMap">
+    select ID
+    from Userinfo
+    where del = 0
+    and Access != '线长'
+    and Luncurr = '在职'
+    and ShiftName = #{shiftName, jdbcType=NVARCHAR}
+    and DeptID = #{lineId, jdbcType=INTEGER}
+  </select>
+
+  <select id="selectPostInfo" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+    select MainPost, PostName, Important
+    from TrainRecord TrainRecord, Userinfo Userinfo, PositionsInfo PositionsInfo
+    where TrainRecord.PersonnelId = Userinfo.ID
+    and TrainRecord.PostId = PositionsInfo.Id
+    and TrainRecord.del = 0
+    and Userinfo.ID = #{userId, jdbcType=INTEGER}
+  </select>
+
+  <select id="selectUserList" resultType="java.util.HashMap">
+    select ID as id,
+    UserName as userName
+    from Userinfo
+    where del = 0
+    and Luncurr = '在职'
+  </select>
+</mapper>

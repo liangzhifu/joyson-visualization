@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyson.visualization.grade.dao.GradeTaskMapper">
+  <resultMap id="BaseResultMap" type="com.joyson.visualization.grade.model.GradeTask">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="grade_month_id" jdbcType="BIGINT" property="gradeMonthId" />
+    <result column="task_seq" jdbcType="INTEGER" property="taskSeq" />
+    <result column="task_status" jdbcType="INTEGER" property="taskStatus" />
+  </resultMap>
+
+  <select id="selectGradeTaskList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    select gradeTask.id,
+    gradeTask.grade_month_id as gradeMonthId,
+    gradeMonth.month,
+    userInfo.UserName as userName,
+    gradeMonth.dept_name as deptName,
+    gradeMonth.shift_name as shiftName,
+    gradeTask.task_status as taskStatus,
+    gradeTask.task_seq as taskSeq
+    from grade_month gradeMonth, Userinfo userInfo, grade_task gradeTask
+    where gradeMonth.user_id = userInfo.id
+    and gradeMonth.id = gradeTask.grade_month_id
+    and gradeTask.task_status in (1, 11)
+    and gradeTask.user_id = #{userId, jdbcType=INTEGER}
+    order by month
+    OFFSET #{pageStart, jdbcType=INTEGER} ROWS
+    FETCH NEXT #{pageSize, jdbcType=INTEGER} ROWS ONLY
+  </select>
+
+  <select id="selectGradeTaskCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select count(1)
+    from grade_month gradeMonth, Userinfo userInfo, grade_task gradeTask
+    where gradeMonth.user_id = userInfo.id
+    and gradeMonth.id = gradeTask.grade_month_id
+    and gradeTask.task_status in (1, 11)
+    and gradeTask.user_id = #{userId, jdbcType=INTEGER}
+  </select>
+
+  <update id="updateGradeTask" parameterType="com.joyson.visualization.grade.model.GradeTask">
+    update grade_task
+    <set>
+      <if test="taskStatus != null">
+        task_status = #{taskStatus, jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId, jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id, jdbcType=BIGINT}
+  </update>
+</mapper>

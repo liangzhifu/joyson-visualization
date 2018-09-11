@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyson.visualization.grade.dao.GradeMonthMapper">
+  <resultMap id="BaseResultMap" type="com.joyson.visualization.grade.model.GradeMonth">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="month" jdbcType="NVARCHAR" property="month" />
+    <result column="dept_name" jdbcType="NVARCHAR" property="deptName" />
+    <result column="shift_name" jdbcType="NVARCHAR" property="shiftName" />
+    <result column="line_id" jdbcType="INTEGER" property="lineId" />
+  </resultMap>
+
+  <select id="selectGradeMonthPageList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    select gradeMonth.id,
+    gradeMonth.month,
+    userInfo.UserName as userName,
+    gradeMonth.dept_name as deptName,
+    gradeMonth.shift_name as shiftName,
+    (select (case when gradeTask.task_status = 1 then (case gradeTask.task_seq when 1 then 1 when 2 then 2 else 0 end)
+    when gradeTask.task_status = 11 then (case gradeTask.task_seq when 1 then 3 when 2 then 4 else 0 end)
+    else 0 end) from grade_task gradeTask where gradeTask.grade_month_id = gradeMonth.id and gradeTask.task_status in (1,11)) as monthStatus,
+    (select userInfo2.UserName + '(' + userInfo2.UserNo + ')' from grade_task gradeTask, Userinfo userInfo2 where gradeTask.grade_month_id = gradeMonth.id and gradeTask.task_status in (1,11) and gradeTask.user_id = userInfo2.id) as taskUserName
+    from grade_month gradeMonth, Userinfo userInfo
+    where gradeMonth.user_id = userInfo.id
+    <if test="deptName != null and deptName != ''">
+      and gradeMonth.dept_name like '%'+#{deptName, jdbcType=NVARCHAR}+'%'
+    </if>
+    order by month
+    OFFSET #{pageStart, jdbcType=INTEGER} ROWS
+    FETCH NEXT #{pageSize, jdbcType=INTEGER} ROWS ONLY
+  </select>
+
+  <select id="selectGradeMonthPageCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select count(1)
+    from grade_month gradeMonth, Userinfo userInfo
+    where gradeMonth.user_id = userInfo.id
+    <if test="deptName != null and deptName != ''">
+      and gradeMonth.dept_name like '%'+#{deptName, jdbcType=NVARCHAR}+'%'
+    </if>
+  </select>
+
+  <update id="updateGradeMonthUserId" parameterType="com.joyson.visualization.grade.model.GradeMonth">
+    update grade_month
+    set user_id = #{userId, jdbcType=INTEGER}
+    where id = #{id, jdbcType=BIGINT}
+  </update>
+</mapper>

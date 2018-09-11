@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joyson.visualization.grade.dao.GradeLineMapper">
+  <resultMap id="BaseResultMap" type="com.joyson.visualization.grade.model.GradeLine">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="begin_date" jdbcType="DATE" property="beginDate" />
+    <result column="end_date" jdbcType="DATE" property="endDate" />
+    <result column="shift_name" jdbcType="NVARCHAR" property="shiftName" />
+    <result column="dept_name" jdbcType="NVARCHAR" property="deptName" />
+    <result column="grade_status" jdbcType="INTEGER" property="gradeStatus" />
+    <result column="grade_date" jdbcType="DATE" property="gradeDate" />
+    <result column="delete_state" jdbcType="INTEGER" property="deleteState" />
+    <result column="line_id" jdbcType="INTEGER" property="lineId" />
+  </resultMap>
+
+  <select id="selectGradeLineById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select id, user_id, shift_name, dept_name, grade_status, delete_state, line_id, begin_date
+    from grade_line
+    where id = #{id, jdbcType=BIGINT}
+  </select>
+
+  <select id="selectGradeLinePageList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    select gradeLine.id,
+    lineInfo.DeptName as deptName,
+    gradeLine.shift_name as shiftName,
+    userInfo.UserName as userName,
+    CONVERT(varchar(100), gradeLine.begin_date, 23) as beginDate,
+    CONVERT(varchar(100), gradeLine.end_date, 23) as endDate,
+    gradeLine.grade_status as gradeStatus
+    from grade_line gradeLine, LineInfo lineInfo, Userinfo userInfo
+    where gradeLine.line_id = lineInfo.id
+    and gradeLine.user_id = userInfo.id
+    and gradeLine.delete_state = 0
+    <if test="deptName != null and deptName != ''">
+      and lineInfo.deptName like '%'+#{deptName, jdbcType=NVARCHAR}+'%'
+    </if>
+    <if test="gradeStatus != null and gradeStatus != ''">
+      and gradeLine.grade_status = #{gradeStatus, jdbcType=INTEGER}
+    </if>
+    <if test="userId != null and userId != ''">
+      and gradeLine.user_id = #{userId, jdbcType=INTEGER}
+    </if>
+    order by gradeLine.id desc
+    OFFSET #{pageStart, jdbcType=INTEGER} ROWS
+    FETCH NEXT #{pageSize, jdbcType=INTEGER} ROWS ONLY
+  </select>
+
+  <select id="selectGradeLinePageCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select count(1)
+    from grade_line gradeLine, LineInfo lineInfo, Userinfo userInfo
+    where gradeLine.line_id = lineInfo.id
+    and gradeLine.user_id = userInfo.id
+    and gradeLine.delete_state = 0
+    <if test="deptName != null and deptName != ''">
+      and lineInfo.deptName like '%'+#{deptName, jdbcType=NVARCHAR}+'%'
+    </if>
+    <if test="gradeStatus != null and gradeStatus != ''">
+      and gradeLine.grade_status = #{gradeStatus, jdbcType=INTEGER}
+    </if>
+    <if test="userId != null and userId != ''">
+      and gradeLine.user_id = #{userId, jdbcType=INTEGER}
+    </if>
+  </select>
+
+  <update id="updateGradeStatus" parameterType="com.joyson.visualization.grade.model.GradeLine">
+    update grade_line
+    set grade_status = #{gradeStatus, jdbcType=INTEGER}
+    where id = #{id, jdbcType=BIGINT}
+  </update>
+
+  <update id="updateGradeUserId" parameterType="com.joyson.visualization.grade.model.GradeLine">
+    update grade_line
+    set user_id = #{userId, jdbcType=INTEGER}
+    where id = #{id, jdbcType=BIGINT}
+  </update>
+
+  <select id="selectMonthGradeLine" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select *
+    from grade_line
+    where line_id = #{lineId, jdbcType=INTEGER}
+    and shift_name = #{shiftName, jdbcType=NVARCHAR}
+    and begin_date &lt;= CONVERT(date,#{beginDateEnd, jdbcType=NVARCHAR},120)
+    and begin_date &gt;= CONVERT(date,#{beginDateBegin, jdbcType=NVARCHAR},120)
+    order by begin_date asc
+  </select>
+</mapper>
